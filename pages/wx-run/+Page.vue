@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 
 const showPicker = ref(false);
 const columns = ref([{ value: "CUSTOM", text: "自定义输入账号" }]);
@@ -80,17 +80,12 @@ const handleSubmit = () => {
   }
 };
 
-onMounted(() => {
+onBeforeMount(() => {
   window.wxRun = {
     setAccount(values) {
       columns.value.push(...values);
     },
   };
-  try {
-    $dora.sendEvent("getAccount");
-  } catch (error) {
-    console.log(error);
-  }
 });
 </script>
 
