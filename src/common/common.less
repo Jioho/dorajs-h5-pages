@@ -1,0 +1,31 @@
+// 注意不要改动到 PX ，这样才能忽略REM转换
+html {
+  font-size: 37.5px;
+}
+
+body {
+  // prettier-ignore
+  font-size: 16PX;
+}
+
+@media screen and (max-width: 300px) {
+  html {
+    // prettier-ignore
+    font-size: 60PX !important;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  html {
+    // prettier-ignore
+    font-size: 60PX !important;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
