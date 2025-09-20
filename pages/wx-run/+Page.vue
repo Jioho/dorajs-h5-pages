@@ -49,18 +49,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const showPicker = ref(false);
-const columns = [
-  { value: "JIOHO", text: "手机号 / 135 / 主号" },
-  { value: "EMAIL", text: "邮箱 / 9965/ 小号" },
-  { value: "CUSTOM", text: "自定义输入账号" },
-];
+const columns = ref([{ value: "CUSTOM", text: "自定义输入账号" }]);
 
 const formData = ref({
-  type: "account", // password
-  account: "",
+  type: "password", // password
+  account: "CUSTOM",
   user: "",
   password: "",
   step: 100,
@@ -77,8 +73,25 @@ const onConfirm = ({ selectedValues, selectedOptions }) => {
 };
 
 const handleSubmit = () => {
-  $dora.sendEvent("changeStep", formData.value);
+  try {
+    $dora.sendEvent("changeStep", formData.value);
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+onMounted(() => {
+  window.wxRun = {
+    setAccount(values) {
+      columns.value.push(...values);
+    },
+  };
+  try {
+    $dora.sendEvent("getAccount");
+  } catch (error) {
+    console.log(error);
+  }
+});
 </script>
 
 <style scoped lang="less">
