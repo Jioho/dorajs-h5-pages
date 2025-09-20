@@ -35,6 +35,13 @@
       />
     </template>
 
+    <van-field
+      v-model="formData.step"
+      name="step"
+      label="步数"
+      placeholder="步数"
+    />
+
     <div class="footer">
       <van-button block @click="handleSubmit">提交</van-button>
     </div>
@@ -56,7 +63,7 @@ const formData = ref({
   account: "",
   user: "",
   password: "",
-  step: "",
+  step: 100,
 });
 
 const onConfirm = ({ selectedValues, selectedOptions }) => {
