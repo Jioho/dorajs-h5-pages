@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { onBeforeMount, onMounted, ref } from "vue";
 
 const showPicker = ref(false);
