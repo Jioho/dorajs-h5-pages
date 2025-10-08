@@ -194,11 +194,15 @@ onBeforeMount(() => {
       columns.value.push(...values);
     },
     setAccountInfo(info) {
-      // const info = JSON.parse(infoSrt);
-      accountInfo.value = Object.keys(info).map((key) => ({
-        key: key,
-        value: info[key],
-      }));
+      if (info) {
+        // const info = JSON.parse(infoSrt);
+        accountInfo.value = Object.keys(info).map((key) => ({
+          key: key,
+          value: info[key],
+        }));
+      } else {
+        accountInfo.value = [];
+      }
     },
   };
 });
