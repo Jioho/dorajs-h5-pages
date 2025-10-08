@@ -45,6 +45,53 @@
     <div class="footer">
       <van-button block @click="handleSubmit">提交</van-button>
     </div>
+    <div class="footer">
+      <van-button block @click="handleEditAccount">账号管理</van-button>
+    </div>
+
+    <!-- 底部弹出 -->
+    <van-popup
+      v-model:show="showAccountInfo"
+      position="bottom"
+      :style="{ height: '90%' }"
+    >
+      <div class="popup-wrap">
+        <h2 class="page-title">账号管理</h2>
+        <div class="account">{{ formData.account }}</div>
+
+        <van-field
+          v-for="item in accountInfo"
+          v-model="item.value"
+          :name="item.key"
+          :label="item.key"
+          placeholder="请输入"
+          type="textarea"
+          clearable
+        />
+
+        <div class="footer">
+          <van-button block @click="handleSaveAccount">提交</van-button>
+        </div>
+
+        <h2 class="page-title">动态解析</h2>
+        <van-field
+          v-model="appendInfo.key"
+          name="key"
+          label="key"
+          placeholder="key"
+        />
+        <van-field
+          v-model="appendInfo.value"
+          name="value"
+          label="value"
+          placeholder="value"
+        />
+
+        <div class="footer">
+          <van-button block @click="handleAppendInfo">追加</van-button>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -53,6 +100,13 @@ import { onBeforeMount, onMounted, ref } from "vue";
 
 const showPicker = ref(false);
 const columns = ref([{ value: "CUSTOM", text: "自定义输入账号" }]);
+
+const accountInfo = ref([]);
+const appendInfo = ref({
+  key: "",
+  value: "",
+});
+const showAccountInfo = ref(false);
 
 const formData = ref({
   type: "password", // password
@@ -80,10 +134,71 @@ const handleSubmit = () => {
   }
 };
 
+const handleEditAccount = () => {
+  showAccountInfo.value = true;
+  try {
+    $dora.sendEvent("getAccountInfo", formData.value.account);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleSaveAccount = () => {
+  showConfirmDialog({
+    title: "二次确认",
+    message: "是否确认保存该账号信息，保存后无法恢复",
+  }).then(() => {
+    // on confirm
+    const info = {};
+    accountInfo.value.forEach((item) => {
+      info[item.key] = item.value;
+    });
+
+    console.log("info", info);
+    try {
+      $dora.sendEvent("saveAccountInfo", {
+        account: formData.value.account,
+        info,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    showAccountInfo.value = false;
+    accountInfo.value = [];
+    appendInfo.value = {
+      key: "",
+      value: "",
+    };
+  });
+};
+
+const handleAppendInfo = () => {
+  if (!appendInfo.value.key || !appendInfo.value.value) {
+    showToast("请输入完整的key和value");
+    return;
+  }
+  const index = accountInfo.value.findIndex(
+    (item) => item.key === appendInfo.value.key
+  );
+  if (index !== -1) {
+    accountInfo.value[index].value = appendInfo.value.value;
+  } else {
+    accountInfo.value.push(appendInfo.value);
+  }
+};
+
 onBeforeMount(() => {
   window.wxRun = {
     setAccount(values) {
       columns.value.push(...values);
+    },
+    setAccountInfo(info) {
+      // const info = JSON.parse(infoSrt);
+      accountInfo.value = Object.keys(info).map((key) => ({
+        key: key,
+        value: info[key],
+      }));
     },
   };
 });
@@ -105,5 +220,17 @@ onBeforeMount(() => {
 
 .footer {
   padding: 20px 0;
+}
+
+.popup-wrap {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+
+  .account {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 40px;
+  }
 }
 </style>
