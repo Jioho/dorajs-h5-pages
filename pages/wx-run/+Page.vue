@@ -2,15 +2,26 @@
   <div class="max-norem">
     <h2 class="page-title">微信运动修改步数</h2>
 
-    <van-field
-      v-model="formData.account"
-      is-link
-      readonly
-      name="picker"
-      label="选择账号"
-      placeholder="点击选择账号"
-      @click="showPicker = true"
-    />
+    <div style="display: flex; align-items: center">
+      <van-field
+        v-model="formData.account"
+        is-link
+        readonly
+        name="picker"
+        label="选择账号"
+        placeholder="点击选择账号"
+        @click="showPicker = true"
+        style="flex: 1; width: 0"
+      >
+      </van-field>
+      <van-button
+        v-if="formData.account !== 'CUSTOM'"
+        size="small"
+        @click.stop="handleEditAccount"
+        >账号管理</van-button
+      >
+    </div>
+
     <van-popup v-model:show="showPicker" destroy-on-close position="bottom">
       <van-picker
         :columns="columns"
@@ -43,10 +54,7 @@
     />
 
     <div class="footer">
-      <van-button block @click="handleSubmit">提交</van-button>
-    </div>
-    <div class="footer">
-      <van-button block @click="handleEditAccount">账号管理</van-button>
+      <van-button type="primary" block @click="handleSubmit">提交</van-button>
     </div>
 
     <!-- 底部弹出 -->
@@ -232,14 +240,14 @@ onBeforeMount(() => {
 }
 
 .popup-wrap {
-  padding: 20px;
+  padding: 0 20px;
   height: 100%;
   overflow-y: auto;
 
   .account {
     font-size: 12px;
     color: #666;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 }
 </style>
