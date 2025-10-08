@@ -135,6 +135,11 @@ const handleSubmit = () => {
 };
 
 const handleEditAccount = () => {
+  accountInfo.value = [];
+  appendInfo.value = {
+    key: "",
+    value: "",
+  };
   showAccountInfo.value = true;
   try {
     $dora.sendEvent("getAccountInfo", formData.value.account);
